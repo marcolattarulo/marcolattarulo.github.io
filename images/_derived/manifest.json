@@ -251,6 +251,17 @@
    1600
   ]
  },
+ "seaside/08.jpg": {
+  "base": "seaside/08",
+  "h": 1972,
+  "jpg": 960,
+  "w": 1972,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
  "still-life/01.jpg": {
   "base": "still-life/01",
   "h": 1799,
