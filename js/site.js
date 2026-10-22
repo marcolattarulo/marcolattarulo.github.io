@@ -1,6 +1,6 @@
 /* Marco Lattarulo — portfolio interactions (vanilla, no dependencies)
    - light/dark theme toggle (persisted)
-   - language preference memory (for the "/" redirect)
+   - language choice memory (for the "/" redirect) + language dropdown
    - mobile nav toggle
    - lazy image fade-in
    - sticky-nav shadow + back-to-top button
@@ -59,19 +59,40 @@
       return;
     }
 
-    var lang = e.target.closest(".lang-switch");
+    var lang = e.target.closest(".lang-link");
     if (lang) {
-      try {
-        localStorage.setItem("ml-lang", lang.getAttribute("lang") || lang.textContent.trim().toLowerCase());
-      } catch (err) {}
+      try { localStorage.setItem("ml-lang", lang.getAttribute("lang")); } catch (err) {}
+      return;
     }
+
+    var langBtn = e.target.closest(".lang-current");
+    if (langBtn) {
+      var sw = langBtn.parentNode;
+      var openNow = sw.classList.toggle("is-open");
+      langBtn.setAttribute("aria-expanded", openNow ? "true" : "false");
+      return;
+    }
+    closeLangMenus();
   });
 
-  /* ---------- Remember current language for the root redirect ---------- */
-  try {
-    var m = location.pathname.match(/^\/(it|en)\//);
-    if (m) localStorage.setItem("ml-lang", m[1]);
-  } catch (e) {}
+  /* ---------- Language dropdown (hover is handled in CSS) ---------- */
+  function closeLangMenus() {
+    document.querySelectorAll("[data-lang-switch].is-open").forEach(function (sw) {
+      sw.classList.remove("is-open");
+      sw.querySelector(".lang-current").setAttribute("aria-expanded", "false");
+    });
+  }
+  document.querySelectorAll("[data-lang-switch]").forEach(function (sw) {
+    sw.addEventListener("mouseleave", function () {
+      if (window.matchMedia("(hover: hover)").matches) closeLangMenus();
+    });
+    sw.addEventListener("focusout", function (ev) {
+      if (!sw.contains(ev.relatedTarget)) closeLangMenus();
+    });
+  });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") closeLangMenus();
+  });
 
   /* ---------- Lazy fade-in ---------- */
   var lazies = [].slice.call(document.querySelectorAll("img[loading='lazy']"));
