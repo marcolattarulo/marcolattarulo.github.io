@@ -381,7 +381,7 @@ img.img-in { opacity: 0; transition: opacity .6s ease; }
 }
 .cat-card img,
 .cat-card picture { width: 100%; height: 100%; }
-.cat-card img { object-fit: cover; transition: transform .6s ease; }
+.cat-card img { object-fit: cover; object-position: var(--cover-pos, center); transition: transform .6s ease; }
 .cat-card:hover img { transform: scale(1.05); }
 .cat-card span {
   position: absolute; left: 0; right: 0; bottom: 0;
