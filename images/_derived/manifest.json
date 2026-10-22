@@ -1,0 +1,394 @@
+{
+ "landscapes/01.jpg": {
+  "base": "landscapes/01",
+  "h": 1292,
+  "jpg": 960,
+  "w": 1293,
+  "widths": [
+   480,
+   960,
+   1293
+  ]
+ },
+ "landscapes/02.jpg": {
+  "base": "landscapes/02",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "landscapes/03.jpg": {
+  "base": "landscapes/03",
+  "h": 1375,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "landscapes/04.jpg": {
+  "base": "landscapes/04",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1768,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "landscapes/05.jpg": {
+  "base": "landscapes/05",
+  "h": 1440,
+  "jpg": 960,
+  "w": 1440,
+  "widths": [
+   480,
+   960,
+   1440
+  ]
+ },
+ "portraits/01.jpg": {
+  "base": "portraits/01",
+  "h": 1440,
+  "jpg": 960,
+  "w": 1440,
+  "widths": [
+   480,
+   960,
+   1440
+  ]
+ },
+ "portraits/02.jpg": {
+  "base": "portraits/02",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1799,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "portraits/03.jpg": {
+  "base": "portraits/03",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1364,
+  "widths": [
+   480,
+   960,
+   1364
+  ]
+ },
+ "portraits/04.jpg": {
+  "base": "portraits/04",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1262,
+  "widths": [
+   480,
+   960,
+   1262
+  ]
+ },
+ "portraits/05.jpg": {
+  "base": "portraits/05",
+  "h": 1785,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "portraits/06.jpg": {
+  "base": "portraits/06",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1440,
+  "widths": [
+   480,
+   960,
+   1440
+  ]
+ },
+ "portraits/07.jpg": {
+  "base": "portraits/07",
+  "h": 1769,
+  "jpg": 960,
+  "w": 1770,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "portraits/08.jpg": {
+  "base": "portraits/08",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1388,
+  "widths": [
+   480,
+   960,
+   1388
+  ]
+ },
+ "portraits/09.jpg": {
+  "base": "portraits/09",
+  "h": 1440,
+  "jpg": 960,
+  "w": 1440,
+  "widths": [
+   480,
+   960,
+   1440
+  ]
+ },
+ "portraits/10.jpg": {
+  "base": "portraits/10",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1611,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "portraits/11.jpg": {
+  "base": "portraits/11",
+  "h": 1136,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "portraits/12.jpg": {
+  "base": "portraits/12",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1324,
+  "widths": [
+   480,
+   960,
+   1324
+  ]
+ },
+ "seaside/01.jpg": {
+  "base": "seaside/01",
+  "h": 1279,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "seaside/02.jpg": {
+  "base": "seaside/02",
+  "h": 1800,
+  "jpg": 883,
+  "w": 883,
+  "widths": [
+   480,
+   883
+  ]
+ },
+ "seaside/03.jpg": {
+  "base": "seaside/03",
+  "h": 1218,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "seaside/04.jpg": {
+  "base": "seaside/04",
+  "h": 1389,
+  "jpg": 960,
+  "w": 1799,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "seaside/06.jpg": {
+  "base": "seaside/06",
+  "h": 1348,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "seaside/07.jpg": {
+  "base": "seaside/07",
+  "h": 1799,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "still-life/01.jpg": {
+  "base": "still-life/01",
+  "h": 1799,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "still-life/02.jpg": {
+  "base": "still-life/02",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "still-life/03.jpg": {
+  "base": "still-life/03",
+  "h": 1389,
+  "jpg": 1012,
+  "w": 1012,
+  "widths": [
+   480,
+   1012
+  ]
+ },
+ "still-life/04.jpg": {
+  "base": "still-life/04",
+  "h": 1231,
+  "jpg": 960,
+  "w": 1340,
+  "widths": [
+   480,
+   960,
+   1340
+  ]
+ },
+ "still-life/05.jpg": {
+  "base": "still-life/05",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1747,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "still-life/06.jpg": {
+  "base": "still-life/06",
+  "h": 1800,
+  "jpg": 960,
+  "w": 1524,
+  "widths": [
+   480,
+   960,
+   1524
+  ]
+ },
+ "still-life/07.jpg": {
+  "base": "still-life/07",
+  "h": 1799,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "still-life/08.jpg": {
+  "base": "still-life/08",
+  "h": 1800,
+  "jpg": 732,
+  "w": 732,
+  "widths": [
+   480,
+   732
+  ]
+ },
+ "still-life/09.jpg": {
+  "base": "still-life/09",
+  "h": 1303,
+  "jpg": 960,
+  "w": 1300,
+  "widths": [
+   480,
+   960,
+   1300
+  ]
+ },
+ "still-life/10.jpg": {
+  "base": "still-life/10",
+  "h": 1360,
+  "jpg": 960,
+  "w": 1360,
+  "widths": [
+   480,
+   960,
+   1360
+  ]
+ },
+ "still-life/11.jpg": {
+  "base": "still-life/11",
+  "h": 1271,
+  "jpg": 960,
+  "w": 1271,
+  "widths": [
+   480,
+   960,
+   1271
+  ]
+ },
+ "still-life/12.jpg": {
+  "base": "still-life/12",
+  "h": 1799,
+  "jpg": 960,
+  "w": 1800,
+  "widths": [
+   480,
+   960,
+   1600
+  ]
+ },
+ "still-life/13.jpg": {
+  "base": "still-life/13",
+  "h": 980,
+  "jpg": 980,
+  "w": 980,
+  "widths": [
+   480,
+   980
+  ]
+ }
+}
