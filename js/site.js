@@ -127,77 +127,180 @@
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  /* ---------- Artwork zoom viewer ---------- */
+  /* ---------- Fullscreen artwork viewer ---------- */
+  // Gallery tiles open the viewer in place (arrows, swipe, Esc); on a work page
+  // the zoom button opens it and neighbouring works are fetched on demand.
   var zoomBtn = document.querySelector(".work-zoom");
-  if (!zoomBtn) return;
+  var tiles = Array.prototype.slice.call(document.querySelectorAll(".gallery .tile > a"));
+  if (!zoomBtn && !tiles.length) return;
 
-  var overlay = null;
+  var overlay = null, opener = null, provider = null, index = 0, current = null;
+  var lang = document.documentElement.lang || "en";
+  var L = { prev: "Previous", next: "Next", close: "Close", details: "Details" };
+  if (lang === "it") L = { prev: "Precedente", next: "Successiva", close: "Chiudi", details: "Dettagli" };
+  if (lang === "es") L = { prev: "Anterior", next: "Siguiente", close: "Cerrar", details: "Detalles" };
 
-  function openZoom() {
-    var srcFull = zoomBtn.getAttribute("data-zoom-src");
+  function largest(picture) {
+    var src = picture.querySelector('source[type="image/webp"]') || picture.querySelector("source");
+    var list = src ? src.getAttribute("srcset").split(",") : [];
+    var last = list.length ? list[list.length - 1].trim().split(/\s+/)[0] : "";
+    return last || picture.querySelector("img").getAttribute("src");
+  }
+
+  function tileProvider(start) {
+    var items = tiles.map(function (a) {
+      var pic = a.querySelector("picture");
+      var img = a.querySelector("img");
+      return { src: largest(pic), alt: img.alt, href: a.getAttribute("href"), el: a };
+    });
+    return { start: start, get: function (i) { return Promise.resolve(items[i] || null); } };
+  }
+
+  function pageItem(doc, url) {
+    var btn = doc.querySelector(".work-zoom");
+    if (!btn) return null;
+    var img = btn.querySelector("img");
+    var p = doc.querySelector('.work-nav a[rel="prev"]');
+    var n = doc.querySelector('.work-nav a[rel="next"]');
+    return {
+      src: btn.getAttribute("data-zoom-src"), alt: img ? img.alt : "", href: url,
+      prevHref: p ? p.getAttribute("href") : null, nextHref: n ? n.getAttribute("href") : null
+    };
+  }
+
+  function workProvider() {
+    var cache = {}, lo = 0, hi = 0;
+    cache[0] = pageItem(document, location.pathname);
+    function fetchItem(href) {
+      return fetch(href).then(function (r) { return r.text(); }).then(function (t) {
+        return pageItem(new DOMParser().parseFromString(t, "text/html"), href);
+      }).catch(function () { return null; });
+    }
+    return {
+      start: 0,
+      get: function (i) {
+        if (cache[i] !== undefined) return Promise.resolve(cache[i]);
+        var base = i < lo ? cache[lo] : i > hi ? cache[hi] : null;
+        var href = base && (i < lo ? base.prevHref : base.nextHref);
+        if (!href || (i < lo ? i !== lo - 1 : i !== hi + 1)) return Promise.resolve(null);
+        return fetchItem(href).then(function (it) {
+          if (it) { cache[i] = it; if (i < lo) lo = i; else hi = i; }
+          return it;
+        });
+      }
+    };
+  }
+
+  function openViewer(p, from) {
+    provider = p; index = p.start; opener = from;
     overlay = document.createElement("div");
     overlay.className = "zoom-overlay";
     overlay.setAttribute("role", "dialog");
     overlay.setAttribute("aria-modal", "true");
     overlay.innerHTML =
-      '<button class="zoom-close" aria-label="Close">✕</button>' +
-      '<div class="zoom-stage"><img alt=""></div>';
+      '<button class="zoom-close" aria-label="' + L.close + '">✕</button>' +
+      '<button class="zoom-nav zoom-nav--prev" aria-label="' + L.prev + '" hidden>‹</button>' +
+      '<button class="zoom-nav zoom-nav--next" aria-label="' + L.next + '" hidden>›</button>' +
+      '<div class="zoom-stage"><img alt=""></div>' +
+      '<div class="zoom-caption"><span class="zoom-title"></span><a class="zoom-details" hidden>' + L.details + '</a></div>';
     document.body.appendChild(overlay);
     document.body.style.overflow = "hidden";
 
     var stage = overlay.querySelector(".zoom-stage");
     var img = overlay.querySelector("img");
-    img.src = srcFull;
-    var pageImg = zoomBtn.querySelector("img");
-    img.alt = pageImg ? pageImg.alt : "";
-
     var zoomed = false;
-    function toggleZoom(ev) {
-      zoomed = !zoomed;
-      stage.classList.toggle("is-zoomed", zoomed);
-      if (zoomed && ev) {
+    img.draggable = false;
+
+    function setZoom(on, ev) {
+      zoomed = on;
+      stage.classList.toggle("is-zoomed", on);
+      if (on && ev) {
         var r = img.getBoundingClientRect();
         stage.scrollLeft = (ev.clientX - r.left) / r.width * stage.scrollWidth - stage.clientWidth / 2;
         stage.scrollTop = (ev.clientY - r.top) / r.height * stage.scrollHeight - stage.clientHeight / 2;
       }
     }
-    img.addEventListener("click", toggleZoom);
+    img.addEventListener("click", function (ev) { setZoom(!zoomed, ev); });
 
-    // drag to pan when zoomed
+    // drag to pan when zoomed; swipe to navigate when not
     var down = false, sx = 0, sy = 0, ol = 0, ot = 0;
     stage.addEventListener("pointerdown", function (ev) {
-      if (!zoomed) return;
       down = true; sx = ev.clientX; sy = ev.clientY;
       ol = stage.scrollLeft; ot = stage.scrollTop;
-      stage.setPointerCapture(ev.pointerId);
+      if (zoomed) stage.setPointerCapture(ev.pointerId);
     });
     stage.addEventListener("pointermove", function (ev) {
-      if (!down) return;
+      if (!down || !zoomed) return;
       stage.scrollLeft = ol - (ev.clientX - sx);
       stage.scrollTop = ot - (ev.clientY - sy);
     });
-    stage.addEventListener("pointerup", function () { down = false; });
+    stage.addEventListener("pointerup", function (ev) {
+      if (!down) return;
+      down = false;
+      var dx = ev.clientX - sx, dy = ev.clientY - sy;
+      if (!zoomed && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    });
+    stage.addEventListener("pointercancel", function () { down = false; });
 
-    overlay.querySelector(".zoom-close").addEventListener("click", closeZoom);
+    var prevBtn = overlay.querySelector(".zoom-nav--prev");
+    var nextBtn = overlay.querySelector(".zoom-nav--next");
+    prevBtn.addEventListener("click", function () { go(-1); });
+    nextBtn.addEventListener("click", function () { go(1); });
+    overlay.querySelector(".zoom-close").addEventListener("click", closeViewer);
     overlay.addEventListener("click", function (ev) {
-      if (ev.target === overlay) closeZoom();
+      if (ev.target === overlay || ev.target === stage) closeViewer();
     });
     document.addEventListener("keydown", onKey);
+
+    var busy = false;
+    function show(i, item) {
+      index = i; current = item; setZoom(false);
+      img.src = item.src; img.alt = item.alt;
+      overlay.querySelector(".zoom-title").textContent = item.alt;
+      var d = overlay.querySelector(".zoom-details");
+      d.hidden = !tiles.length || !!zoomBtn;
+      if (!d.hidden) d.setAttribute("href", item.href);
+      // arrows appear once a neighbour is known to exist; preload it
+      [-1, 1].forEach(function (dir) {
+        provider.get(i + dir).then(function (n) {
+          if (!overlay || index !== i) return;
+          (dir < 0 ? prevBtn : nextBtn).hidden = !n;
+          if (n) { var pre = new Image(); pre.src = n.src; }
+        });
+      });
+    }
+    overlay._go = function (dir) {
+      if (busy) return;
+      busy = true;
+      provider.get(index + dir).then(function (n) { if (n && overlay) show(index + dir, n); busy = false; });
+    };
+    provider.get(index).then(function (it) { if (it) show(index, it); });
     overlay.querySelector(".zoom-close").focus();
   }
 
+  function go(dir) { if (overlay) overlay._go(dir); }
+
   function onKey(ev) {
-    if (ev.key === "Escape") closeZoom();
+    if (ev.key === "Escape") closeViewer();
+    else if (ev.key === "ArrowLeft") go(-1);
+    else if (ev.key === "ArrowRight") go(1);
   }
 
-  function closeZoom() {
+  function closeViewer() {
     if (!overlay) return;
     document.removeEventListener("keydown", onKey);
     overlay.remove();
     overlay = null;
     document.body.style.overflow = "";
-    zoomBtn.focus();
+    if (opener) opener.focus();
   }
 
-  zoomBtn.addEventListener("click", openZoom);
+  if (zoomBtn) zoomBtn.addEventListener("click", function () { openViewer(workProvider(), zoomBtn); });
+  tiles.forEach(function (a, i) {
+    a.addEventListener("click", function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button) return;
+      ev.preventDefault();
+      openViewer(tileProvider(i), a);
+    });
+  });
 })();
