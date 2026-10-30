@@ -253,6 +253,27 @@
     document.addEventListener("keydown", onKey);
 
     var busy = false;
+    var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function loaded() {
+      if (img.complete && img.naturalWidth) return Promise.resolve();
+      return new Promise(function (res) {
+        img.addEventListener("load", res, { once: true });
+        img.addEventListener("error", res, { once: true });
+      });
+    }
+    // old image slides out the way the arrow points, the new one slides in from the other side
+    function slide(dir, swap) {
+      if (calm || !img.animate) return Promise.resolve(swap());
+      var out = img.animate(
+        [{ opacity: 1, transform: "translateX(0)" }, { opacity: 0, transform: "translateX(" + (-dir * 60) + "px)" }],
+        { duration: 180, easing: "ease-in", fill: "forwards" });
+      return out.finished.then(function () { return swap(); }).then(function () {
+        if (!overlay) return;
+        return img.animate(
+          [{ opacity: 0, transform: "translateX(" + (dir * 60) + "px)" }, { opacity: 1, transform: "translateX(0)" }],
+          { duration: 320, easing: "cubic-bezier(.2,.7,.2,1)" }).finished.then(function () { out.cancel(); });
+      }).catch(function () {});
+    }
     function show(i, item) {
       index = i; current = item; setZoom(false);
       img.src = item.src; img.alt = item.alt;
@@ -272,7 +293,10 @@
     overlay._go = function (dir) {
       if (busy) return;
       busy = true;
-      provider.get(index + dir).then(function (n) { if (n && overlay) show(index + dir, n); busy = false; });
+      provider.get(index + dir).then(function (n) {
+        if (!n || !overlay) { busy = false; return; }
+        slide(dir, function () { show(index + dir, n); return loaded(); }).then(function () { busy = false; });
+      });
     };
     provider.get(index).then(function (it) { if (it) show(index, it); });
     overlay.querySelector(".zoom-close").focus();
